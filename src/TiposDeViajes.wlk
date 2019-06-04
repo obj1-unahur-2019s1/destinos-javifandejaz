@@ -3,11 +3,11 @@ import Socios.*
 class Viajes {
 	
 	var property idiomas = #{}
-	var property esfuerzo 
-	var property sirveParaBroncearse
+	var property esfuerzo = true
+	var property sirveParaBroncearse = true
 	var property cantDias = 0
 	
-	method esInteresante(){ return idiomas > 2}
+	method esInteresante(){ return idiomas.size() > 1}
 	method idioma(tipo){ idiomas.add(tipo)}
 	
 	method esRecomendada(socio){ return self.esInteresante() and socio.leAtrae() and not socio.actividades().conteins(self) }
@@ -20,7 +20,7 @@ class ALaPlaya inherits Viajes{
 	
 	override method cantDias(){ return (largo.div(500)) }
 	override method esfuerzo(){ return largo >= 1200 }
-	override method sirveParaBroncearse(){ return true }
+	//override method sirveParaBroncearse(){ return true }
 }
 
 
@@ -49,7 +49,7 @@ class SalidaDeTrekking inherits Viajes{
 	override method esfuerzo(){ return kmSenderos > 80 }
 	override method sirveParaBroncearse(){ return  ( diasDeSol > 200 or diasDeSol.between(100, 200) and kmSenderos > 120) }
 
-	override method esInteresante(){return super() and diasDeSol >= 140}
+	override method esInteresante(){return super() and diasDeSol > 140}
 }
 
 
@@ -60,7 +60,7 @@ class ClasesDeGimnasia inherits Viajes{
 	// var nueva = new ClasesDeGimnasia( idiomas = "Español", esfuerzo = true, sirveParaBroncearse = false, cantDias = 1 )
 	
 	override method idiomas() = #{"Español"}
-	override method esfuerzo() = true
+	//override method esfuerzo() = true
 	override method sirveParaBroncearse() = false
 	override method cantDias() = 1
 	
@@ -75,9 +75,9 @@ class TallerLiterario inherits Viajes{
 	
 	method libros(libro){ libros.add(libro) }
 	
-	method idiomasLibros(){ return libros.map({ libro => libro.idioma() })  }
-	method diasQueLLeva(){ return libros.size() + 1 }
-	method implicaEsfuerzo(){ return libros.any({ libro => libro.paginas() >= 500 }) or libros.map({ libro => libro.autor()}).size() == 1 and libros.size() > 1 }
+	method idiomasLibros(){ return libros.map({ libro => libro.idioma() }).asSet()  }
+	override method cantDias(){ return libros.size() + 1 }
+	override method esfuerzo(){ return libros.any({ libro => libro.paginas() >= 500 }) or libros.map({ libro => libro.autor()}).size() == 1 and libros.size() > 1 }
 	
 	override method sirveParaBroncearse() = false
 	override method esRecomendada(socio){ return socio.idiomasQueHabla().size() > 1 }

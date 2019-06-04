@@ -1,0 +1,72 @@
+import TiposDeViajes.*
+import Socios.*
+
+describe "Viajes"{
+	
+	//Destinos
+	const playa1 = new ALaPlaya( largo = 1000 )
+	const playa2 = new ALaPlaya( largo = 2000 )
+	const taller1 = new TallerLiterario()
+	const gym1 = new ClasesDeGimnasia()
+	
+	//Libros
+	const libroMate = new Libro( idioma = "Español", paginas = 200, autor = "Joako")
+	const libroHisto = new Libro( idioma = "Español", paginas = 400, autor = "Pablito")
+	const libroProg = new Libro( idioma = "Español", paginas = 300, autor = "Javier")
+	
+	//Socios
+	const roque = new SocioTranquilo(maxActividades = 2)
+	const ana = new SocioRelajado(maxActividades = 3)
+	
+	
+	
+	test "Test con Roque" {
+		roque.actividad(playa1)
+		roque.actividad(playa2)
+		
+		roque.actividad(gym1)
+		assert.equals("Error, Llego al maximo de actividades permitidas", roque.mensaje())
+		
+		assert.equals(2, roque.saberCantidad())
+		
+		roque.idiomaQueHabla("Español")
+		roque.idiomaQueHabla("Ingles")
+		
+		assert.that(playa1.sirveParaBroncearse())
+		assert.that(playa2.sirveParaBroncearse())
+		
+		assert.notThat(playa1.esfuerzo())
+		assert.that(playa2.esfuerzo())
+		
+		assert.that(roque.esAdoradorDelSol())
+		assert.equals(#{playa2}, roque.actividadesEsforzadas())
+		
+		taller1.libros(libroMate)
+		taller1.libros(libroHisto)
+		taller1.libros(libroProg)
+		
+		assert.equals(#{"Español"},taller1.idiomasLibros())
+		
+		assert.that(taller1.esRecomendada(roque))
+		
+		assert.that(roque.leAtrae(taller1))
+		
+		roque.actividad(taller1)
+		
+		assert.equals("Error, Llego al maximo de actividades permitidas", roque.mensaje())
+		
+		}
+		
+	test "Test con Ana" {
+		ana.actividad(playa1)
+		ana.actividad(playa2)
+		ana.actividad(gym1)
+		
+		assert.equals(3, ana.saberCantidad())
+		
+		assert.notThat(ana.esAdoradorDelSol())
+		
+		assert.equals(#{playa2, gym1}, ana.actividadesEsforzadas())
+	}
+
+}
